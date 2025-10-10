@@ -217,13 +217,10 @@ function filterBusesInWindow(buses, currentTime) {
     const windowEnd = new Date(currentTime);
     windowEnd.setMinutes(windowEnd.getMinutes() + 45);
     
-    // 5 minute grace period for buses where we should have already left
-    const graceStart = new Date(currentTime);
-    graceStart.setMinutes(graceStart.getMinutes() - 5);
-    
     return buses.filter(bus => {
         const leaveTime = bus.leaveHomeTime;
-        return leaveTime >= graceStart && leaveTime <= windowEnd;
+        // Only show buses where leave time is now or later
+        return leaveTime >= currentTime && leaveTime <= windowEnd;
     });
 }
 
