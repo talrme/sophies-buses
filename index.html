@@ -8,7 +8,16 @@
 </head>
 <body>
     <div class="container">
-        <h1><a href="index.html" class="title-link"><img src="sophies_buses_title.png" alt="Sophie's Buses" class="title-banner"></a></h1>
+        <h1>
+            <a href="index.html" class="title-link">
+                <div class="banner-container">
+                    <img src="title_banner_2.png" alt="Buses Banner" class="title-banner">
+                    <div class="banner-text">
+                        <span id="banner-name">Sophie's</span> Buses
+                    </div>
+                </div>
+            </a>
+        </h1>
         
         <!-- To Work Section -->
         <section id="to-work-section" class="bus-section">
@@ -73,6 +82,11 @@
             <button id="toggle-settings" class="settings-toggle">⚙️ Settings</button>
             <div id="settings-panel" class="settings-panel" style="display: none;">
                 
+                <!-- Info Note -->
+                <div class="settings-info">
+                    💡 Your settings are saved in the URL - bookmark or share the link to keep your configuration!
+                </div>
+
                 <!-- Current Stops -->
                 <div class="settings-group">
                     <h4>Stops</h4>
@@ -96,9 +110,20 @@
                     </div>
                 </div>
 
-                <!-- Time Tester -->
+                <!-- Personalization -->
                 <div class="settings-group">
-                    <h4>Time Tester</h4>
+                    <h4>Personalize Banner</h4>
+                    <p class="settings-description">Change the name displayed in the page banner</p>
+                    <div class="name-input-section">
+                        <label for="user-name">Your Name:</label>
+                        <input type="text" id="user-name" placeholder="Sophie" maxlength="20">
+                        <button id="update-name" class="secondary-btn">Update</button>
+                    </div>
+                </div>
+
+                <!-- Schedule Preview -->
+                <div class="settings-group">
+                    <h4>Preview Schedule at Different Time</h4>
                     <div class="time-picker-section">
                         <label for="test-time">Test Time:</label>
                         <input type="time" id="test-time">

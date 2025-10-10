@@ -53,11 +53,17 @@ h1 {
 .title-link {
     display: inline-block;
     transition: transform 0.2s ease, opacity 0.2s ease;
+    text-decoration: none;
 }
 
 .title-link:hover {
     transform: scale(1.02);
     opacity: 0.9;
+}
+
+.banner-container {
+    position: relative;
+    display: inline-block;
 }
 
 .title-banner {
@@ -67,6 +73,29 @@ h1 {
     margin: 0 auto;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.banner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(1.2em, 3.5vw, 2.8em);
+    font-weight: 700;
+    color: white;
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 0.6),
+        5px 5px 15px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
+    pointer-events: none;
+    max-width: 70%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#banner-name {
+    color: #fff;
 }
 
 /* ============= SECTIONS ============= */
@@ -374,6 +403,17 @@ h1 {
     box-shadow: var(--shadow);
 }
 
+.settings-info {
+    background: #dbeafe;
+    border-left: 4px solid #3b82f6;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 24px;
+    color: #1e40af;
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
 .settings-group {
     margin-bottom: 24px;
 }
@@ -383,9 +423,16 @@ h1 {
 }
 
 .settings-group h4 {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     color: var(--text-primary);
     font-size: 1em;
+}
+
+.settings-description {
+    margin: 0 0 12px 0;
+    color: var(--text-secondary);
+    font-size: 0.85em;
+    line-height: 1.4;
 }
 
 #add-stop-form {
@@ -593,6 +640,28 @@ h1 {
 
 /* ============= TIME PICKER ============= */
 
+.name-input-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.name-input-section label {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.name-input-section input[type="text"] {
+    flex: 1;
+    min-width: 150px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.9em;
+}
+
 .time-picker-section {
     display: flex;
     align-items: center;
@@ -640,6 +709,11 @@ h1 {
     
     h1 {
         font-size: 1.5em;
+    }
+    
+    .banner-text {
+        font-size: clamp(1em, 3vw, 2em);
+        max-width: 80%;
     }
     
     .bus-section {

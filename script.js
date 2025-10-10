@@ -7,6 +7,7 @@ let config = {
     toWork: [],
     toHome: []
 };
+let userName = 'Sophie'; // Default name
 let testTime = null;
 let refreshInterval = null;
 let routesCache = null; // Cache for all routes
@@ -65,6 +66,13 @@ function updateTimeDisplay() {
 function loadConfigFromURL() {
     const params = new URLSearchParams(window.location.search);
     
+    // Parse name
+    const nameParam = params.get('name');
+    if (nameParam) {
+        userName = decodeURIComponent(nameParam);
+    }
+    updateBannerName();
+    
     // Parse toWork stops
     const toWork = params.get('toWork');
     if (toWork) {
@@ -118,6 +126,11 @@ function encodeStopConfig(stop) {
 function updateURL() {
     const params = new URLSearchParams();
     
+    // Add name if not default
+    if (userName && userName !== 'Sophie') {
+        params.set('name', encodeURIComponent(userName));
+    }
+    
     if (config.toWork.length > 0) {
         params.set('toWork', config.toWork.map(encodeStopConfig).join(','));
     }
@@ -128,6 +141,19 @@ function updateURL() {
     
     const newURL = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
     window.history.replaceState({}, '', newURL);
+}
+
+function updateBannerName() {
+    const bannerNameEl = document.getElementById('banner-name');
+    const nameInput = document.getElementById('user-name');
+    
+    if (bannerNameEl) {
+        bannerNameEl.textContent = userName + "'s";
+    }
+    
+    if (nameInput) {
+        nameInput.value = userName;
+    }
 }
 
 // ============= API CALLS =============
@@ -615,10 +641,20 @@ function initializeEventListeners() {
     document.getElementById('toggle-settings').addEventListener('click', () => {
         const panel = document.getElementById('settings-panel');
         const btn = document.getElementById('toggle-settings');
+        const settingsSection = document.querySelector('.settings-section');
+        
         if (panel.style.display === 'none') {
             panel.style.display = 'block';
             btn.classList.add('active');
-            } else {
+            
+            // Smooth scroll to settings section
+            setTimeout(() => {
+                settingsSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start'
+                });
+            }, 100); // Small delay to ensure panel is rendered
+        } else {
             panel.style.display = 'none';
             btn.classList.remove('active');
         }
@@ -677,6 +713,24 @@ function initializeEventListeners() {
         updateTimeDisplay();
         updateSectionOrder();
         loadAllBuses();
+    });
+    
+    // Name update button
+    document.getElementById('update-name').addEventListener('click', () => {
+        const nameInput = document.getElementById('user-name');
+        const newName = nameInput.value.trim();
+        if (newName) {
+            userName = newName;
+            updateBannerName();
+            updateURL();
+        }
+    });
+    
+    // Allow Enter key to update name
+    document.getElementById('user-name').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            document.getElementById('update-name').click();
+        }
     });
 }
 
