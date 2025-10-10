@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bus Map - Proof of Concept</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f3f4f6;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        #map {
+            width: 100%;
+            height: calc(100vh - 100px);
+        }
+
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .legend-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .bus-icon {
+            background: #3b82f6;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .stop-icon {
+            background: #10b981;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .loading {
+            position: absolute;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 20px 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🗺️ Bus Map - To Home Section</h1>
+        <p class="subtitle">Real-time bus locations for your "To Home" routes</p>
+    </div>
+
+    <div id="loading" class="loading">Loading buses...</div>
+    <div id="map"></div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-icon bus-icon"></div>
+            <span>Bus (real-time)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-icon stop-icon"></div>
+            <span>Your stop</span>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const API_KEY = '1D2F479986AC4AB6C54967362E0371F8';
+        const API_BASE = 'https://api.actransit.org/transit';
+
+        // To Home stops configuration
+        const stops = [
+            { route: '6', stopId: '51636', stopName: '10th St & Washington St', lat: 37.802254, lon: -122.2744562 },
+            { route: '18', stopId: '52642', stopName: '12th St & Franklin St', lat: 37.8026868, lon: -122.2711135 },
+            { route: '88', stopId: '55557', stopName: '12th St & Broadway (12th St BART)', lat: 37.803168, lon: -122.272624 },
+            { route: '22', stopId: '55557', stopName: '12th St & Broadway (12th St BART)', lat: 37.803168, lon: -122.272624 },
+            { route: '12', stopId: '57333', stopName: 'Broadway & 7th St', lat: 37.7996901, lon: -122.273941 }
+        ];
+
+        // Initialize map centered on downtown Oakland
+        const map = L.map('map').setView([37.8044, -122.2712], 14);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Custom icons
+        const busIcon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div style="background: #3b82f6; width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 14px;">🚌</div>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+        });
+
+        const stopIcon = L.divIcon({
+            className: 'custom-icon',
+            html: '<div style="background: #10b981; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+            iconSize: [26, 26],
+            iconAnchor: [13, 13]
+        });
+
+        // Add stop markers
+        stops.forEach(stop => {
+            const marker = L.marker([stop.lat, stop.lon], { icon: stopIcon }).addTo(map);
+            marker.bindPopup(`
+                <strong>Route ${stop.route}</strong><br>
+                ${stop.stopName}
+            `);
+        });
+
+        // Fetch and display buses
+        async function loadBuses() {
+            const loading = document.getElementById('loading');
+            const routesToCheck = [...new Set(stops.map(s => s.route))]; // Unique routes
+            
+            let totalBuses = 0;
+
+            for (const route of routesToCheck) {
+                try {
+                    const url = `${API_BASE}/actrealtime/vehicle?token=${API_KEY}&rt=${route}`;
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (data['bustime-response'] && data['bustime-response'].vehicle) {
+                        const vehicles = data['bustime-response'].vehicle;
+                        
+                        vehicles.forEach(vehicle => {
+                            const lat = parseFloat(vehicle.lat);
+                            const lon = parseFloat(vehicle.lon);
+                            const heading = vehicle.hdg || 0;
+                            
+                            const marker = L.marker([lat, lon], { icon: busIcon }).addTo(map);
+                            marker.bindPopup(`
+                                <strong>🚌 Route ${route}</strong><br>
+                                Vehicle #${vehicle.vid}<br>
+                                Heading: ${vehicle.des}<br>
+                                <small>Heading: ${heading}°</small>
+                            `);
+                            
+                            totalBuses++;
+                        });
+                    }
+                } catch (error) {
+                    console.error(`Error loading buses for route ${route}:`, error);
+                }
+            }
+
+            loading.textContent = `Showing ${totalBuses} buses`;
+            setTimeout(() => {
+                loading.style.display = 'none';
+            }, 2000);
+        }
+
+        loadBuses();
+    </script>
+</body>
+</html>
+

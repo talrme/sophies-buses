@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sophie's Buses</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1><a href="index.html" class="title-link"><img src="sophies_buses_title.png" alt="Sophie's Buses" class="title-banner"></a></h1>
+        
+        <!-- To Work Section -->
+        <section id="to-work-section" class="bus-section">
+            <h2>🏢 To Work</h2>
+            <div id="to-work-buses" class="buses-container">
+                <div class="loading">Loading buses...</div>
+            </div>
+        </section>
+
+        <!-- To Home Section -->
+        <section id="to-home-section" class="bus-section">
+            <h2>🏠 To Home</h2>
+            <div id="to-home-buses" class="buses-container">
+                <div class="loading">Loading buses...</div>
+            </div>
+        </section>
+
+        <!-- Add Stop Modal -->
+        <div id="add-stop-modal" class="modal-overlay" style="display: none;">
+            <div class="modal-card">
+                <div class="modal-card-header">
+                    <h3>Add Stop</h3>
+                    <button class="modal-close" id="close-add-stop">✕</button>
+                </div>
+                <form id="add-stop-form">
+                    <input type="hidden" id="section-select">
+                    <input type="hidden" id="edit-index">
+                    
+                    <div class="form-row">
+                        <label>Route/Line:</label>
+                        <select id="route-input" required>
+                            <option value="">Loading routes...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>Direction:</label>
+                        <select id="direction-select" required disabled>
+                            <option value="">Select route first...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>Stop:</label>
+                        <select id="stop-select" required disabled>
+                            <option value="">Select direction first...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label id="walk-time-label">Walk time from home (minutes):</label>
+                        <input type="number" id="walk-time-input" min="1" max="60" value="10" required>
+                    </div>
+                    
+                    <button type="submit" class="primary-btn" id="submit-stop-btn">Add Stop</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="settings-section">
+            <button id="toggle-settings" class="settings-toggle">⚙️ Settings</button>
+            <div id="settings-panel" class="settings-panel" style="display: none;">
+                
+                <!-- Current Stops -->
+                <div class="settings-group">
+                    <h4>Stops</h4>
+                    
+                    <!-- To Work Stops -->
+                    <div class="stops-subsection">
+                        <div class="subsection-header">
+                            <span class="subsection-title">🏢 To Work</span>
+                        </div>
+                        <div id="stops-list-work" class="stops-list-container"></div>
+                        <button class="add-stop-btn-small" data-section="toWork">+ Add Stop</button>
+                    </div>
+
+                    <!-- To Home Stops -->
+                    <div class="stops-subsection">
+                        <div class="subsection-header">
+                            <span class="subsection-title">🏠 To Home</span>
+                        </div>
+                        <div id="stops-list-home" class="stops-list-container"></div>
+                        <button class="add-stop-btn-small" data-section="toHome">+ Add Stop</button>
+                    </div>
+                </div>
+
+                <!-- Time Tester -->
+                <div class="settings-group">
+                    <h4>Time Tester</h4>
+                    <div class="time-picker-section">
+                        <label for="test-time">Test Time:</label>
+                        <input type="time" id="test-time">
+                        <button id="reset-time" class="secondary-btn">Use Current Time</button>
+                    </div>
+                    <div id="current-time-display" class="time-display"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
