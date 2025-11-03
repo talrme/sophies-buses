@@ -72,6 +72,28 @@
                         <input type="number" id="walk-time-input" min="1" max="60" value="10" required>
                     </div>
                     
+                    <div class="form-section-divider">
+                        <span>Optional: Journey Endpoint</span>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>Destination Stop (optional):</label>
+                        <select id="destination-stop-select">
+                            <option value="">None - just show bus arrival</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>Walk time to destination (minutes):</label>
+                        <input type="number" id="walk-time-destination-input" min="0" max="60" value="5" disabled>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>Manual bus travel time (optional, minutes):</label>
+                        <input type="number" id="manual-bus-travel-time-input" min="1" max="120" placeholder="Leave empty to use API" disabled>
+                        <small class="form-hint">If provided, skips API and uses this fixed travel time instead</small>
+                    </div>
+                    
                     <button type="submit" class="primary-btn" id="submit-stop-btn">Add Stop</button>
                 </form>
             </div>

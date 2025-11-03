@@ -128,6 +128,7 @@ h1 {
     padding: 16px;
     border-left: 4px solid var(--primary);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
 }
 
 .bus-card:hover {
@@ -277,6 +278,214 @@ h1 {
 @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
+}
+
+/* ============= NEW CARD LAYOUT ============= */
+
+.minimal-stop {
+    font-size: 0.7em;
+    color: var(--text-subtle);
+    margin-top: 4px;
+    display: block;
+}
+
+.minimal-stop.stop-link {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.minimal-stop.stop-link:hover {
+    text-decoration: underline;
+}
+
+.journey-row {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+.journey-condensed {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.journey-time {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Compact journey format (Option 6) */
+.journey-compact {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.journey-time-compact {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.journey-time-compact.no-data {
+    font-weight: 500;
+    color: var(--text-subtle);
+    font-size: 0.85em;
+}
+
+.journey-arrow-compact {
+    color: var(--text-secondary);
+    margin: 0 2px;
+}
+
+.journey-duration {
+    color: var(--text-subtle);
+    font-size: 0.9em;
+    margin-left: 4px;
+}
+
+.journey-separator {
+    color: var(--text-subtle);
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.status-ontime {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-late {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-early {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-scheduled {
+    background: #e5e7eb;
+    color: #4b5563;
+}
+
+/* Journey row with chevron */
+.journey-row-with-chevron {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Expand chevron */
+.expand-chevron {
+    color: var(--text-subtle);
+    font-size: 1.2em;
+    transition: all 0.2s;
+    user-select: none;
+    margin-left: 12px;
+}
+
+.bus-card:hover .expand-chevron {
+    color: var(--primary);
+}
+
+.expand-chevron.expanded {
+    transform: rotate(90deg);
+}
+
+/* Expanded journey section */
+.journey-expanded {
+    margin-top: 8px;
+    padding: 12px;
+    background: var(--bg);
+    border-radius: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.journey-expanded.show {
+    display: flex;
+}
+
+/* Horizontal timeline */
+.timeline-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+    overflow-x: auto;
+    padding: 4px 0;
+}
+
+.timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 60px;
+}
+
+.timeline-icon {
+    font-size: 1.5em;
+}
+
+.timeline-label {
+    font-size: 0.75em;
+    color: var(--text-subtle);
+    text-align: center;
+}
+
+.timeline-time {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.9em;
+}
+
+.timeline-time-subtle {
+    font-weight: 400;
+    color: var(--text-subtle);
+}
+
+.timeline-time-bold {
+    font-weight: 700;
+    color: #000;
+}
+
+.timeline-arrow {
+    color: var(--text-subtle);
+    font-size: 1.2em;
+    margin: 0 4px;
+}
+
+/* Expanded status */
+.expanded-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85em;
+    flex-wrap: wrap;
+}
+
+.expanded-status.scheduled-row {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.status-text {
+    color: var(--text-subtle);
+    font-size: 0.9em;
 }
 
 /* ============= STATES ============= */
@@ -475,6 +684,26 @@ h1 {
     background: var(--background);
     color: var(--text-subtle);
     cursor: not-allowed;
+}
+
+.form-hint {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.8em;
+    color: var(--text-subtle);
+    font-style: italic;
+    line-height: 1.3;
+}
+
+.form-section-divider {
+    margin: 20px 0 16px 0;
+    padding: 8px 0;
+    border-top: 1px solid var(--border);
+    color: var(--text-subtle);
+    font-size: 0.85em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .primary-btn {

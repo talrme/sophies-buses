@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function getCurrentTime() {
     if (testTime) {
         const [hours, minutes] = testTime.split(':');
-        const now = new Date();
+    const now = new Date();
         now.setHours(parseInt(hours), parseInt(minutes), 0, 0);
         return now;
     }
@@ -80,11 +80,11 @@ function loadConfigFromURL() {
     } else {
         // Default stops for To Work
         config.toWork = [
-            { route: '18', direction: 'Southbound', stopId: '53085', stopName: 'Shattuck Av & 59th St', walkTime: 6, lat: 37.8442, lon: -122.26514 },
-            { route: '6', direction: 'Southbound', stopId: '54499', stopName: 'Telegraph Av & 59th St', walkTime: 11, lat: 37.8447505, lon: -122.2614085 },
-            { route: '88', direction: 'Southbound', stopId: '59090', stopName: 'Market St & 59th St', walkTime: 10, lat: 37.8435226, lon: -122.2750257 },
-            { route: '12', direction: 'Southbound', stopId: '56156', stopName: 'Martin Luther King Jr Way & 59th St', walkTime: 3, lat: 37.8439824, lon: -122.2707689 },
-            { route: '22', direction: 'Eastbound', stopId: '53582', stopName: 'Stanford Av & Market St', walkTime: 9, lat: 37.8443154, lon: -122.2755564 }
+            { route: '18', direction: 'Southbound', stopId: '53085', stopName: 'Shattuck Av & 59th St', walkTime: 6, lat: 37.8442, lon: -122.26514, destinationStopId: '53334', destinationStopName: '11th St & Franklin St', walkTimeToDestination: 6, manualBusTravelTime: 20 },
+            { route: '6', direction: 'Southbound', stopId: '54499', stopName: 'Telegraph Av & 59th St', walkTime: 11, lat: 37.8447505, lon: -122.2614085, destinationStopId: '51636', destinationStopName: '10th St & Washington St', walkTimeToDestination: 2, manualBusTravelTime: 22 },
+            { route: '88', direction: 'Southbound', stopId: '59090', stopName: 'Market St & 59th St', walkTime: 10, lat: 37.8435226, lon: -122.2750257, destinationStopId: '51536', destinationStopName: '10th St & Clay St', walkTimeToDestination: 1, manualBusTravelTime: 20 },
+            { route: '12', direction: 'Southbound', stopId: '56156', stopName: 'Martin Luther King Jr Way & 59th St', walkTime: 3, lat: 37.8439824, lon: -122.2707689, destinationStopId: '51536', destinationStopName: 'Broadway & 9th St', walkTimeToDestination: 1, manualBusTravelTime: 36 },
+            { route: '22', direction: 'Eastbound', stopId: '53582', stopName: 'Stanford Av & Market St', walkTime: 9, lat: 37.8443154, lon: -122.2755564, destinationStopId: '54777', destinationStopName: '11th St & Broadway', walkTimeToDestination: 4, manualBusTravelTime: 29 }
         ];
     }
     
@@ -95,11 +95,11 @@ function loadConfigFromURL() {
     } else {
         // Default stops for To Home
         config.toHome = [
-            { route: '6', direction: 'Northbound', stopId: '51636', stopName: '10th St & Washington St', walkTime: 3, lat: 37.802254, lon: -122.2744562 },
-            { route: '18', direction: 'Northbound', stopId: '52642', stopName: '12th St & Franklin St', walkTime: 6, lat: 37.8026868, lon: -122.2711135 },
-            { route: '88', direction: 'Northbound', stopId: '55557', stopName: '12th St & Broadway (12th St BART)', walkTime: 6, lat: 37.803168, lon: -122.272624 },
-            { route: '22', direction: 'Westbound', stopId: '55557', stopName: '12th St & Broadway (12th St BART)', walkTime: 6, lat: 37.803168, lon: -122.272624 },
-            { route: '12', direction: 'Northbound', stopId: '57333', stopName: 'Broadway & 7th St', walkTime: 4, lat: 37.7996901, lon: -122.273941 }
+            { route: '6', direction: 'Northbound', stopId: '51636', stopName: '10th St & Washington St', walkTime: 3, lat: 37.802254, lon: -122.2744562, destinationStopId: '55002', destinationStopName: 'Telegraph Av & 59th St.', walkTimeToDestination: 10, manualBusTravelTime: 22 },
+            { route: '18', direction: 'Northbound', stopId: '52642', stopName: '12th St & Franklin St', walkTime: 6, lat: 37.8026868, lon: -122.2711135, destinationStopId: '53087', destinationStopName: 'Shattuck Av & 59th St', walkTimeToDestination: 5, manualBusTravelTime: 21 },
+            { route: '88', direction: 'Northbound', stopId: '55557', stopName: '12th St & Broadway (12th St BART)', walkTime: 6, lat: 37.803168, lon: -122.272624, destinationStopId: '58528', destinationStopName: 'Market St & Arlington Av', walkTimeToDestination: 10, manualBusTravelTime: 18 },
+            { route: '22', direction: 'Westbound', stopId: '55557', stopName: '12th St & Broadway (12th St BART)', walkTime: 6, lat: 37.803168, lon: -122.272624, destinationStopId: '52805', destinationStopName: 'Alcatraz Av & Dover St', walkTimeToDestination: 8, manualBusTravelTime: 32 },
+            { route: '12', direction: 'Northbound', stopId: '57333', stopName: 'Broadway & 7th St', walkTime: 4, lat: 37.7996901, lon: -122.273941, destinationStopId: '52425', destinationStopName: 'Martin Luther King Jr Way & 59th St', walkTimeToDestination: 2, manualBusTravelTime: 39 }
         ];
     }
     
@@ -107,20 +107,24 @@ function loadConfigFromURL() {
 }
 
 function parseStopConfig(str) {
-    const [route, direction, stopId, walkTime, stopName, lat, lon] = str.split('|');
-    return {
+    const [route, direction, stopId, walkTime, stopName, lat, lon, destStopId, destStopName, walkTimeToDest, manualBusTravelTime] = str.split('|');
+        return {
         route,
         direction,
         stopId,
         walkTime: parseInt(walkTime),
         stopName: stopName || 'Unknown Stop',
         lat: parseFloat(lat) || 0,
-        lon: parseFloat(lon) || 0
+        lon: parseFloat(lon) || 0,
+        destinationStopId: destStopId || null,
+        destinationStopName: destStopName || null,
+        walkTimeToDestination: walkTimeToDest ? parseInt(walkTimeToDest) : null,
+        manualBusTravelTime: manualBusTravelTime ? parseInt(manualBusTravelTime) : null
     };
 }
 
 function encodeStopConfig(stop) {
-    return `${stop.route}|${stop.direction}|${stop.stopId}|${stop.walkTime}|${stop.stopName}|${stop.lat}|${stop.lon}`;
+    return `${stop.route}|${stop.direction}|${stop.stopId}|${stop.walkTime}|${stop.stopName}|${stop.lat}|${stop.lon}|${stop.destinationStopId || ''}|${stop.destinationStopName || ''}|${stop.walkTimeToDestination || ''}|${stop.manualBusTravelTime || ''}`;
 }
 
 function updateURL() {
@@ -292,7 +296,15 @@ function processPredictions(predictions, stop) {
             minutesUntilLeave,
             isRealtime: pred.dly === false,
             destination: pred.des,
-            scheduledTime: pred.schdtm ? parseACTransitTime(pred.schdtm) : arrivalTime
+            scheduledTime: pred.schdtm ? parseACTransitTime(pred.schdtm) : arrivalTime,
+            walkTime: stop.walkTime,
+            destinationStopId: stop.destinationStopId,
+            destinationStopName: stop.destinationStopName,
+            walkTimeToDestination: stop.walkTimeToDestination,
+            manualBusTravelTime: stop.manualBusTravelTime,
+            vehicleId: pred.vid || null,
+            tripId: pred.tatripid || null,
+            destinationArrivalTime: null // Will be filled in later
         };
     });
 }
@@ -311,7 +323,7 @@ function processSchedule(scheduleItems, stop) {
         const minutesUntilArrival = Math.round((item.arrivalTime - now) / 60000);
         const minutesUntilLeave = Math.round((leaveHomeTime - now) / 60000);
         
-        return {
+            return {
             route: item.route,
             stopId: stop.stopId,
             stopName: stop.stopName,
@@ -323,7 +335,12 @@ function processSchedule(scheduleItems, stop) {
             minutesUntilLeave,
             isRealtime: false,
             destination: item.destination,
-            scheduledTime: item.arrivalTime
+            scheduledTime: item.arrivalTime,
+            walkTime: stop.walkTime,
+            destinationStopId: stop.destinationStopId,
+            destinationStopName: stop.destinationStopName,
+            walkTimeToDestination: stop.walkTimeToDestination,
+            manualBusTravelTime: stop.manualBusTravelTime
         };
     });
 }
@@ -334,6 +351,105 @@ function parseACTransitTime(timeStr) {
     const day = timeStr.substring(6, 8);
     const time = timeStr.substring(9);
     return new Date(`${year}-${month}-${day}T${time}`);
+}
+
+async function matchDestinationPredictions(buses, destinationStopId, route) {
+    // Check if any bus has manual travel time configured
+    const hasManualTime = buses.length > 0 && buses[0].manualBusTravelTime;
+    
+    // If manual travel time is provided, use it and skip all API calls
+    if (hasManualTime) {
+        console.log(`📝 Using manual travel time: ${buses[0].manualBusTravelTime} min (skipping API calls)`);
+        
+        buses.forEach(bus => {
+            const destArrival = new Date(
+                bus.arrivalTime.getTime() + bus.manualBusTravelTime * 60000
+            );
+            bus.destinationArrivalTime = destArrival;
+            bus.finalArrivalTime = new Date(
+                destArrival.getTime() + bus.walkTimeToDestination * 60000
+            );
+            bus.travelTimeMethod = 'MANUAL';
+            console.log(`  ✅ Manual: Bus at ${bus.arrivalTime.toLocaleTimeString()} → Dest at ${destArrival.toLocaleTimeString()}`);
+        });
+        
+        return buses;
+    }
+    
+    if (!destinationStopId) return buses;
+    
+    try {
+        console.log(`🔍 Matching for route ${route}, destination stop ${destinationStopId}:`);
+        
+        // 1. Fetch LIVE predictions for destination stop
+        const destPredictions = await getPredictionsForStop(destinationStopId, route);
+        const filteredDest = destPredictions.filter(pred => 
+            String(pred.rt).toLowerCase() === String(route).toLowerCase()
+        );
+        
+        // 2. Fetch SCHEDULE for destination stop (fallback)
+        const destSchedule = await getScheduleForStop(destinationStopId, route);
+        const filteredSchedule = destSchedule.filter(item => 
+            String(item.route).toLowerCase() === String(route).toLowerCase()
+        );
+        
+        console.log(`  Origin buses: ${buses.length}`);
+        console.log(`  Destination predictions: ${filteredDest.length}`);
+        console.log(`  Destination schedule: ${filteredSchedule.length}`);
+        
+        // Match each bus
+        let liveMatched = 0, scheduleMatched = 0, noMatch = 0;
+        
+        buses.forEach((bus, idx) => {
+            console.log(`  Bus ${idx}: vid=${bus.vehicleId}, tripId=${bus.tripId}, scheduled=${bus.scheduledTime.toLocaleTimeString()}`);
+            
+            // TRY 1: Match with live predictions by vehicle/trip ID
+            const liveMatch = filteredDest.find(destPred => {
+                if (bus.vehicleId && destPred.vid && bus.vehicleId === destPred.vid) return true;
+                if (bus.tripId && destPred.tatripid && bus.tripId === destPred.tatripid) return true;
+                return false;
+            });
+            
+            if (liveMatch) {
+                liveMatched++;
+                console.log(`    ✅ LIVE MATCH (vid: ${bus.vehicleId})`);
+                const year = liveMatch.prdtm.substring(0, 4);
+                const month = liveMatch.prdtm.substring(4, 6);
+                const day = liveMatch.prdtm.substring(6, 8);
+                const time = liveMatch.prdtm.substring(9);
+                bus.destinationArrivalTime = new Date(`${year}-${month}-${day}T${time}`);
+                bus.finalArrivalTime = new Date(bus.destinationArrivalTime.getTime() + bus.walkTimeToDestination * 60000);
+                console.log(`      Arrival: ${bus.finalArrivalTime.toLocaleTimeString()}`);
+                return;
+            }
+            
+            // TRY 2: Match with schedule by comparing arrival times (within 2 min tolerance)
+            const scheduleMatch = filteredSchedule.find(sched => {
+                const timeDiff = Math.abs(sched.arrivalTime - bus.scheduledTime) / 60000; // minutes
+                return timeDiff <= 2; // Within 2 minutes of scheduled time
+            });
+            
+            if (scheduleMatch) {
+                scheduleMatched++;
+                console.log(`    ⏰ SCHEDULE MATCH (time diff: ${Math.abs(scheduleMatch.arrivalTime - bus.scheduledTime) / 60000} min)`);
+                bus.destinationArrivalTime = scheduleMatch.arrivalTime;
+                bus.finalArrivalTime = new Date(bus.destinationArrivalTime.getTime() + bus.walkTimeToDestination * 60000);
+                console.log(`      Arrival: ${bus.finalArrivalTime.toLocaleTimeString()}`);
+                return;
+            }
+            
+            // TRY 3: No match found
+            noMatch++;
+            console.log(`    ❌ NO MATCH - Available dest vids: ${filteredDest.map(d => d.vid).join(', ')}`);
+            console.log(`      Tried ${filteredSchedule.length} scheduled items`);
+        });
+        
+        console.log(`  📊 Results: ${liveMatched} live, ${scheduleMatched} schedule, ${noMatch} no match`);
+    } catch (error) {
+        console.error('Error fetching destination predictions:', error);
+    }
+    
+    return buses;
 }
 
 // ============= UI RENDERING =============
@@ -376,9 +492,17 @@ async function loadBusesForSection(sectionKey) {
     } else {
                     // Use real-time predictions normally
                     return getPredictionsForStop(stop.stopId, stop.route)
-                        .then(predictions => {
+                        .then(async predictions => {
                             console.log(`Got ${predictions.length} predictions for stop ${stop.stopId}`);
-                            return processPredictions(predictions, stop);
+                            let buses = processPredictions(predictions, stop);
+                            
+                            // If this stop has a destination configured, fetch and match destination predictions
+                            if (stop.destinationStopId) {
+                                console.log(`  Fetching destination predictions for stop ${stop.destinationStopId}`);
+                                buses = await matchDestinationPredictions(buses, stop.destinationStopId, stop.route);
+                            }
+                            
+                            return buses;
                         })
                         .catch(err => {
                             console.error(`Error loading predictions for stop ${stop.stopId}:`, err);
@@ -395,8 +519,12 @@ async function loadBusesForSection(sectionKey) {
         allBuses = filterBusesInWindow(allBuses, now);
         console.log('Buses after 45-min window filter:', allBuses.length);
         
-        // Sort by leave home time
-        allBuses.sort((a, b) => a.leaveHomeTime - b.leaveHomeTime);
+        // Sort by arrival at destination time (or bus arrival time if no destination)
+        allBuses.sort((a, b) => {
+            const aArrival = a.finalArrivalTime || a.arrivalTime;
+            const bArrival = b.finalArrivalTime || b.arrivalTime;
+            return aArrival - bArrival;
+        });
         
         // Cache the bus data for time updates
         busDataCache[sectionKey] = allBuses;
@@ -406,7 +534,7 @@ async function loadBusesForSection(sectionKey) {
             console.log('No buses to display');
             container.innerHTML = '<div class="no-buses">No buses in the next 45 minutes</div>';
         } else {
-            console.log('Rendering', allBuses.length, 'buses');
+            console.log('Rendering', allBuses.length, 'buses (sorted by arrival at destination)');
             container.innerHTML = '';
             allBuses.forEach((bus, index) => {
                 container.appendChild(createBusCard(bus, sectionKey, index));
@@ -423,49 +551,199 @@ function createBusCard(bus, section, index) {
     card.className = 'bus-card';
     card.dataset.section = section;
     card.dataset.index = index;
-    // Removed leaving-soon class - no visual change to card
     
-    // Determine the label based on section
-    const leaveLabel = section === 'toWork' ? 'Leave home at:' : 'Leave work at:';
+    // Determine labels based on section
+    const leaveLabel = section === 'toWork' ? 'Leave home at' : 'Leave work at';
+    const destinationLabel = section === 'toWork' ? 'Arrive work' : 'Arrive home';
+    const originLabel = section === 'toWork' ? 'home' : 'work';
+    const destinationIcon = section === 'toWork' ? '🏢' : '🏠';
     
     const arrivalTimeStr = bus.arrivalTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     const leaveTimeStr = bus.leaveHomeTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     const scheduledTimeStr = bus.scheduledTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     
+    // Calculate schedule variance
+    const scheduleVarianceMinutes = Math.round((bus.arrivalTime - bus.scheduledTime) / 60000);
+    let statusBadge = '';
+    let statusText = '';
+    
+    if (bus.isRealtime) {
+        if (Math.abs(scheduleVarianceMinutes) <= 2) {
+            // On time - no badge in condensed view
+            statusText = '(on time)';
+        } else if (scheduleVarianceMinutes > 2) {
+            statusBadge = `<span class="status-badge status-late">${scheduleVarianceMinutes} Min Late</span>`;
+            statusText = `(${scheduleVarianceMinutes} min late)`;
+        } else if (scheduleVarianceMinutes < -2) {
+            statusBadge = `<span class="status-badge status-early">${Math.abs(scheduleVarianceMinutes)} Min Early</span>`;
+            statusText = `(${Math.abs(scheduleVarianceMinutes)} min early)`;
+        }
+    } else {
+        statusBadge = '<span class="status-badge status-scheduled">Scheduled</span>';
+        statusText = '(scheduled)';
+    }
+    
+    // Shortened stop name for display
+    const stopNameShort = bus.stopName.replace(' Avenue', ' Av').replace(' Street', ' St').replace(' & ', ' & ');
+    
+    // Check if destination is configured
+    const hasDestination = bus.destinationStopId && bus.destinationStopName && bus.walkTimeToDestination;
+    
+    // Google Maps link
     const mapsUrl = `https://www.google.com/maps?q=${bus.stopLat},${bus.stopLon}`;
     
-    const urgencyClass = bus.minutesUntilLeave <= 2 ? 'urgent' : bus.minutesUntilLeave <= 5 ? 'soon' : '';
-    
-    card.innerHTML = `
+    let cardHTML = `
         <div class="bus-main-info">
-            <div class="bus-route">${bus.route}</div>
-            <div class="bus-time ${urgencyClass}" data-time-display="minutes">
+            <div>
+                <div class="bus-route">${bus.route}</div>
+                <a href="${mapsUrl}" target="_blank" class="minimal-stop stop-link">${stopNameShort}</a>
+            </div>
+            <div class="bus-time" data-time-display="minutes">
                 <div class="time-value">${bus.minutesUntilArrival}</div>
                 <div class="time-label">min</div>
             </div>
         </div>
-        <div class="bus-details">
-            <div class="detail-row">
-                <span class="detail-label">Stop:</span>
-                <a href="${mapsUrl}" target="_blank" class="stop-link">${bus.stopName}</a>
+        <div class="bus-details">`;
+    
+    if (hasDestination) {
+        // For destination stops, show journey timeline
+        // Use actual destination arrival time if available, otherwise estimate
+        let destinationArrivalStr;
+        let isEstimated = false;
+        
+        if (bus.finalArrivalTime) {
+            // We have real data!
+            destinationArrivalStr = bus.finalArrivalTime.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        } else {
+            // No data available - matching failed
+            destinationArrivalStr = 'No Data';
+            isEstimated = true;
+        }
+        
+        // Calculate total journey time
+        let finalArrival;
+        if (bus.finalArrivalTime) {
+            finalArrival = bus.finalArrivalTime;
+        } else {
+            // Fallback estimate if destination matching failed
+            const estimatedBusRideMinutes = 15;
+            finalArrival = new Date(bus.arrivalTime.getTime() + estimatedBusRideMinutes * 60000 + bus.walkTimeToDestination * 60000);
+        }
+        const totalJourneyMinutes = Math.round((finalArrival - bus.leaveHomeTime) / 60000);
+        
+        cardHTML += `
+            <div class="journey-row">
+                <div class="journey-condensed">
+                    <span>Board bus at</span>
+                    <span class="journey-time">${arrivalTimeStr}</span>
+                    ${statusBadge}
+                    ${bus.minutesUntilLeave < 0 ? '<span class="urgent-badge" data-go-now>GO NOW!</span>' : ''}
+                </div>
             </div>
-            <div class="detail-row">
-                <span class="detail-label">Arriving:</span>
-                <span class="detail-value">${arrivalTimeStr}</span>
-                ${bus.isRealtime ? '<span class="live-dot"></span>' : ''}
+            <div class="journey-row journey-row-with-chevron">
+                <div class="journey-compact">
+                    <span class="journey-time-compact" data-leave-time>${leaveTimeStr.replace(' ', '')}</span>
+                    <span class="journey-arrow-compact">→</span>
+                    <span class="journey-time-compact ${isEstimated ? 'no-data' : ''}" data-destination-time>${destinationArrivalStr.replace(' ', '')}</span>
+                    ${isEstimated ? '' : `<span class="journey-duration">(${totalJourneyMinutes} min)</span>`}
+                </div>
+                <span class="expand-chevron">›</span>
             </div>
-            <div class="detail-row">
-                <span class="detail-label">Scheduled:</span>
-                <span class="detail-value">${scheduledTimeStr}</span>
-        </div>
-            <div class="detail-row leave-time">
-                <span class="detail-label">${leaveLabel}</span>
-                <span class="detail-value ${urgencyClass}" data-leave-time>${leaveTimeStr}</span>
-                ${bus.minutesUntilLeave < 0 ? '<span class="urgent-badge" data-go-now>GO NOW!</span>' : '<span class="urgent-badge" data-go-now style="display:none;">GO NOW!</span>'}
+            <div class="journey-expanded">
+                <div class="timeline-horizontal">
+                    <div class="timeline-step">
+                        <div class="timeline-icon">🏠</div>
+                        <div class="timeline-time timeline-time-subtle">${leaveTimeStr}</div>
+                        <div class="timeline-label">Leave ${section === 'toWork' ? 'home' : 'work'}</div>
+                    </div>
+                    <div class="timeline-arrow">→</div>
+                    <div class="timeline-step">
+                        <div class="timeline-icon">🚶</div>
+                        <div class="timeline-time timeline-time-subtle">${bus.walkTime} min</div>
+                        <div class="timeline-label">Walk</div>
+                    </div>
+                    <div class="timeline-arrow">→</div>
+                    <div class="timeline-step">
+                        <div class="timeline-icon">🚌</div>
+                        <div class="timeline-time timeline-time-bold">${arrivalTimeStr}</div>
+                        <div class="timeline-label">Bus departs</div>
+                    </div>
+                    <div class="timeline-arrow">→</div>
+                    <div class="timeline-step">
+                        <div class="timeline-icon">🚶</div>
+                        <div class="timeline-time timeline-time-subtle">${bus.walkTimeToDestination} min</div>
+                        <div class="timeline-label">Walk</div>
+                    </div>
+                    <div class="timeline-arrow">→</div>
+                    <div class="timeline-step">
+                        <div class="timeline-icon">${destinationIcon}</div>
+                        <div class="timeline-time timeline-time-subtle">${destinationArrivalStr}</div>
+                        <div class="timeline-label">Arrive ${section === 'toWork' ? 'work' : 'home'}</div>
+                    </div>
+                </div>
+                <div class="expanded-status scheduled-row">
+                    <span class="detail-label">Scheduled:</span>
+                    <span class="detail-value">${scheduledTimeStr}</span>
+                </div>
+            </div>`;
+    } else {
+        // No destination configured
+        cardHTML += `
+            <div class="journey-row">
+                <div class="journey-condensed">
+                    <span>Arrives</span>
+                    <span class="journey-time">${arrivalTimeStr}</span>
+                    ${statusBadge}
+                    ${bus.minutesUntilLeave < 0 ? '<span class="urgent-badge" data-go-now>GO NOW!</span>' : ''}
+                </div>
             </div>
+            <div class="journey-row journey-row-with-chevron">
+                <div class="journey-condensed">
+                    <span>${leaveLabel}</span>
+                    <span class="journey-time" data-leave-time>${leaveTimeStr}</span>
+                </div>
+                <span class="expand-chevron">›</span>
+            </div>
+            <div class="journey-expanded">
+                <div class="expanded-status scheduled-row">
+                    <span class="detail-label">Scheduled:</span>
+                    <span class="detail-value">${scheduledTimeStr}</span>
+                </div>
+            </div>`;
+    }
+    
+    cardHTML += `
         </div>
     `;
+
+    card.innerHTML = cardHTML;
     
+    // Add expand toggle to entire card
+    const chevron = card.querySelector('.expand-chevron');
+    const expandedSection = card.querySelector('.journey-expanded');
+    
+    // Make entire card clickable to expand/collapse
+    card.addEventListener('click', (e) => {
+        // Don't expand if clicking on a link
+        if (e.target.tagName === 'A' || e.target.closest('a')) {
+            return;
+        }
+        
+        // Toggle expanded state
+        if (expandedSection) {
+            const isExpanded = expandedSection.classList.toggle('show');
+            if (chevron) {
+                chevron.classList.toggle('expanded', isExpanded);
+            }
+        }
+    });
+    
+    // Hide GO NOW badge by default if not urgent
+    const goNowBadge = card.querySelector('[data-go-now]');
+    if (goNowBadge && bus.minutesUntilLeave >= 0) {
+        goNowBadge.style.display = 'none';
+    }
+
     return card;
 }
 
@@ -507,12 +785,12 @@ function updateStopsList() {
                     <div class="stop-info">
                         <strong>Route ${stop.route}</strong> - ${stop.stopName}
                         <div class="stop-meta">${stop.direction} · ${stop.walkTime} min walk</div>
-                    </div>
+        </div>
                     <div class="stop-actions">
                         <button class="edit-btn" data-section="toHome" data-index="${index}">✏️</button>
                         <button class="remove-btn" data-section="toHome" data-index="${index}">✕</button>
-                    </div>
-                `;
+        </div>
+    `;
                 homeList.appendChild(item);
         });
     }
@@ -532,12 +810,10 @@ function updateStopsList() {
             const section = e.target.dataset.section;
             const index = parseInt(e.target.dataset.index);
             
-            if (confirm('Remove this stop?')) {
-                config[section].splice(index, 1);
-                updateURL();
-                updateStopsList();
-                loadAllBuses();
-            }
+            config[section].splice(index, 1);
+            updateURL();
+            updateStopsList();
+            loadAllBuses();
         });
     });
 }
@@ -598,6 +874,29 @@ function loadStops() {
     stopSelect.disabled = false;
 }
 
+function loadDestinationStops() {
+    const directionSelect = document.getElementById('direction-select');
+    const destinationStopSelect = document.getElementById('destination-stop-select');
+    
+    if (!directionSelect.value) {
+        destinationStopSelect.innerHTML = '<option value="">None - just show bus arrival</option>';
+        destinationStopSelect.disabled = true;
+        return;
+    }
+    
+    const directionData = JSON.parse(directionSelect.value);
+    
+    destinationStopSelect.innerHTML = '<option value="">None - just show bus arrival</option>';
+    directionData.Stops.forEach(stop => {
+        const option = document.createElement('option');
+        option.value = JSON.stringify(stop);
+        option.textContent = `${stop.Name} (${stop.StopId})`;
+        destinationStopSelect.appendChild(option);
+    });
+    
+    destinationStopSelect.disabled = false;
+}
+
 function addStop(e) {
     e.preventDefault();
     
@@ -608,6 +907,10 @@ function addStop(e) {
     const stopData = JSON.parse(document.getElementById('stop-select').value);
     const walkTime = parseInt(document.getElementById('walk-time-input').value);
     
+    const destinationStopSelect = document.getElementById('destination-stop-select');
+    const walkTimeDestInput = document.getElementById('walk-time-destination-input');
+    const manualBusTravelTimeInput = document.getElementById('manual-bus-travel-time-input');
+    
     const stopConfig = {
         route,
         direction: directionData.Direction,
@@ -615,13 +918,30 @@ function addStop(e) {
         stopName: stopData.Name,
         walkTime,
         lat: stopData.Latitude,
-        lon: stopData.Longitude
+        lon: stopData.Longitude,
+        destinationStopId: null,
+        destinationStopName: null,
+        walkTimeToDestination: null,
+        manualBusTravelTime: null
     };
+    
+    // Add destination info if provided
+    if (destinationStopSelect.value && destinationStopSelect.value !== '') {
+        const destData = JSON.parse(destinationStopSelect.value);
+        stopConfig.destinationStopId = destData.StopId;
+        stopConfig.destinationStopName = destData.Name;
+        stopConfig.walkTimeToDestination = parseInt(walkTimeDestInput.value);
+        
+        // Add manual bus travel time if provided
+        if (manualBusTravelTimeInput.value && manualBusTravelTimeInput.value !== '') {
+            stopConfig.manualBusTravelTime = parseInt(manualBusTravelTimeInput.value);
+        }
+    }
     
     if (editIndex !== '') {
         // Edit existing stop
         config[section][parseInt(editIndex)] = stopConfig;
-    } else {
+            } else {
         // Add new stop
         config[section].push(stopConfig);
     }
@@ -654,7 +974,7 @@ function initializeEventListeners() {
                     block: 'start'
                 });
             }, 100); // Small delay to ensure panel is rendered
-        } else {
+            } else {
             panel.style.display = 'none';
             btn.classList.remove('active');
         }
@@ -691,7 +1011,24 @@ function initializeEventListeners() {
     });
     
     // Direction select change
-    document.getElementById('direction-select').addEventListener('change', loadStops);
+    document.getElementById('direction-select').addEventListener('change', async () => {
+        await loadStops();
+        await loadDestinationStops();
+    });
+    
+    // Destination stop select change
+    document.getElementById('destination-stop-select').addEventListener('change', (e) => {
+        const walkTimeDestInput = document.getElementById('walk-time-destination-input');
+        const manualBusTravelTimeInput = document.getElementById('manual-bus-travel-time-input');
+        if (e.target.value && e.target.value !== '') {
+            walkTimeDestInput.disabled = false;
+            manualBusTravelTimeInput.disabled = false;
+        } else {
+            walkTimeDestInput.disabled = true;
+            manualBusTravelTimeInput.disabled = true;
+            manualBusTravelTimeInput.value = '';
+        }
+    });
     
     // Add stop form
     document.getElementById('add-stop-form').addEventListener('submit', addStop);
@@ -768,6 +1105,16 @@ async function openAddStopModal(section) {
     stopSelect.innerHTML = '<option value="">Select direction first...</option>';
     stopSelect.disabled = true;
     document.getElementById('walk-time-input').value = '10';
+    
+    const destinationStopSelect = document.getElementById('destination-stop-select');
+    const walkTimeDestInput = document.getElementById('walk-time-destination-input');
+    const manualBusTravelTimeInput = document.getElementById('manual-bus-travel-time-input');
+    destinationStopSelect.innerHTML = '<option value="">None - just show bus arrival</option>';
+    destinationStopSelect.disabled = true;
+    walkTimeDestInput.value = '5';
+    walkTimeDestInput.disabled = true;
+    manualBusTravelTimeInput.value = '';
+    manualBusTravelTimeInput.disabled = true;
     
     // Load all routes
     try {
@@ -896,9 +1243,23 @@ async function openEditStopModal(section, index) {
                 stopSelect.appendChild(option);
             });
             stopSelect.disabled = false;
+            
+            // Load destination stops
+            const destinationStopSelect = document.getElementById('destination-stop-select');
+            destinationStopSelect.innerHTML = '<option value="">None - just show bus arrival</option>';
+            selectedDirection.Stops.forEach(s => {
+                const option = document.createElement('option');
+                option.value = JSON.stringify(s);
+                option.textContent = `${s.Name} (${s.StopId})`;
+                if (stop.destinationStopId && s.StopId.toString() === stop.destinationStopId.toString()) {
+                    option.selected = true;
+                }
+                destinationStopSelect.appendChild(option);
+            });
+            destinationStopSelect.disabled = false;
         }
         
-    } catch (error) {
+            } catch (error) {
         console.error('Error loading routes for edit:', error);
         alert('Failed to load route data. Please try again.');
     }
@@ -906,14 +1267,35 @@ async function openEditStopModal(section, index) {
     // Set walk time
     document.getElementById('walk-time-input').value = stop.walkTime;
     
-    // Add escape key handler
+    // Set destination walk time
+    const walkTimeDestInput = document.getElementById('walk-time-destination-input');
+    const manualBusTravelTimeInput = document.getElementById('manual-bus-travel-time-input');
+    if (stop.destinationStopId && stop.destinationStopName && stop.walkTimeToDestination) {
+        walkTimeDestInput.value = stop.walkTimeToDestination;
+        walkTimeDestInput.disabled = false;
+        manualBusTravelTimeInput.disabled = false;
+        
+        // Set manual bus travel time if it exists
+        if (stop.manualBusTravelTime) {
+            manualBusTravelTimeInput.value = stop.manualBusTravelTime;
+        } else {
+            manualBusTravelTimeInput.value = '';
+        }
+        } else {
+        walkTimeDestInput.value = '5';
+        walkTimeDestInput.disabled = true;
+        manualBusTravelTimeInput.value = '';
+        manualBusTravelTimeInput.disabled = true;
+        }
+
+        // Add escape key handler
     document.addEventListener('keydown', escapeHandler);
 }
 
 function closeAddStopModal() {
     document.getElementById('add-stop-modal').style.display = 'none';
-    document.removeEventListener('keydown', escapeHandler);
-}
+                document.removeEventListener('keydown', escapeHandler);
+            }
 
 function escapeHandler(e) {
     if (e.key === 'Escape') {
@@ -961,28 +1343,6 @@ function updateBusCountdowns() {
                 timeValue.textContent = minutesUntilArrival;
             }
             
-            // Update urgency class on time display
-            const busTime = card.querySelector('.bus-time');
-            if (busTime) {
-                busTime.classList.remove('urgent', 'soon');
-                if (minutesUntilLeave <= 2) {
-                    busTime.classList.add('urgent');
-                } else if (minutesUntilLeave <= 5) {
-                    busTime.classList.add('soon');
-                }
-            }
-            
-            // Update leave time display
-            const leaveTimeEl = card.querySelector('[data-leave-time]');
-            if (leaveTimeEl) {
-                leaveTimeEl.classList.remove('urgent', 'soon');
-                if (minutesUntilLeave <= 2) {
-                    leaveTimeEl.classList.add('urgent');
-                } else if (minutesUntilLeave <= 5) {
-                    leaveTimeEl.classList.add('soon');
-                }
-            }
-            
             // Show/hide GO NOW badge
             const goNowBadge = card.querySelector('[data-go-now]');
             if (goNowBadge) {
@@ -1015,3 +1375,5 @@ document.addEventListener('visibilitychange', () => {
         }
     }
 });
+
+

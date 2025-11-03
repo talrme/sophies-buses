@@ -9,22 +9,28 @@ A beautiful, real-time transit tracker for AC Transit in the San Francisco Bay A
 ## ✨ Features
 
 ### 🎯 Smart Time Calculations
+- **Complete journey planning** - See your entire trip from door to door
 - **Automatic "Leave Home/Work At" times** - Shows exactly when you need to leave based on your walk time
-- **45-minute window** - Only shows buses arriving in the next 45 minutes (with 5-min grace period)
+- **Final arrival time** - Know when you'll actually arrive at your destination
+- **Sorted by arrival** - Buses ordered by when you arrive at destination (not departure time)
+- **45-minute window** - Only shows buses arriving in the next 45 minutes
 - **GO NOW! alerts** - Flashing badge when it's time to leave immediately
-- **Color-coded urgency** - Orange for "soon", red for "urgent"
 
 ### 🔴 Real-Time Data
 - **Live bus predictions** from AC Transit API
-- **Glowing green dot** indicates real-time tracking (vs scheduled)
+- **Manual bus travel times** - Option to use fixed travel times instead of API predictions
+- **Status badges** - See if buses are on-time, early, or late
 - **Minute-by-minute countdown** updates without page refresh
 - **Smart section ordering** - "To Work" on top in the morning, "To Home" after noon
 
 ### ⚙️ Fully Customizable
-- **Add/edit/remove stops** for any AC Transit route
-- **Custom walk times** for each stop (3-11 minutes)
-- **URL sharing** - Configuration saved in URL for easy sharing
+- **Journey endpoints** - Configure origin stop, destination stop, and walk times for both
+- **Manual travel time override** - Set fixed bus ride durations when you know them best
+- **Add/edit/remove stops** - Support for any AC Transit route
+- **Custom walk times** - Set different walk times for each stop
+- **URL sharing** - Configuration saved in URL for easy bookmarking/sharing
 - **Time tester** - Preview schedule at different times of day
+- **Personalize banner** - Change the name displayed on the page
 
 ### 🎨 Beautiful Design
 - Custom illustrated banner with buses and clouds
@@ -37,18 +43,27 @@ A beautiful, real-time transit tracker for AC Transit in the San Francisco Bay A
 1. **Configure Your Stops**
    - Click "Settings" at the bottom
    - Add stops for "To Work" and "To Home"
-   - Set your walk time for each stop
+   - Set your walk time from home/work to the bus stop
+   - Optionally add a destination stop and walk time to your final destination
+   - **Pro tip:** Add manual bus travel time for accurate predictions without API dependency
 
-2. **View Live Predictions**
+2. **View Complete Journey Timeline**
    - See all buses arriving in the next 45 minutes
-   - Check the "Leave home/work at" time
-   - Click the "GO NOW!" badge when it appears
+   - Buses are sorted by when you arrive at your final destination (fastest first)
+   - Expandable cards show full journey: Leave → Walk → Board Bus → Arrive Destination
+   - Check the "Leave home/work at" time to know when to depart
    - Stop names link directly to Google Maps
 
-3. **Share Your Configuration**
-   - Your stops are saved in the URL
+3. **Manual Travel Time vs API**
+   - **With Manual Time**: Fast, consistent, no API calls needed
+   - **Without Manual Time**: Uses AC Transit API to match origin/destination predictions
+   - **Fallback**: If API matching fails, shows "No Data"
+   - **Recommendation**: Use manual times for your regular commute routes
+
+4. **Share Your Configuration**
+   - Your stops and times are saved in the URL
    - Copy and share the link with others
-   - Works across devices
+   - Works across devices - bookmark on your phone!
 
 ## 🛠️ Technical Details
 
@@ -56,13 +71,22 @@ A beautiful, real-time transit tracker for AC Transit in the San Francisco Bay A
 - **AC Transit Real-Time API** for live bus predictions
 - **Schedule API** for time-testing and fallback data
 - **Routes API** for dynamic route/stop selection
-- Includes route filtering to ensure only requested buses are shown
+- **Smart destination matching** - Matches buses by vehicle ID and trip ID
+- **Manual travel time override** - Bypasses API when user provides fixed durations
+- Route filtering to ensure only requested buses are shown
+
+### Travel Time Priority Logic
+1. **Manual Travel Time** (highest priority) - User-provided fixed duration, skips API calls
+2. **Live API Match** - Real-time prediction matched by vehicle/trip ID
+3. **Schedule API Match** - Scheduled time matched within 2-minute tolerance
+4. **No Match** - Shows "No Data" when API matching fails
 
 ### Architecture
 - Pure vanilla JavaScript (no frameworks)
 - Client-side only (no backend needed)
 - Efficient API caching to reduce requests
 - Real-time countdown updates every minute
+- URL-based configuration (no server-side storage needed)
 
 ### Default Configuration
 
@@ -132,18 +156,26 @@ The app uses the AC Transit Developer API. The API key is included in the code f
 
 ## 🎨 Customization
 
-### Change Walk Times
+### Add Complete Journey Endpoints
+1. Click "Settings" at the bottom
+2. Click "+ Add Stop" under "To Work" or "To Home"
+3. Select your route, direction, and origin stop
+4. Set your walk time to the bus stop
+5. **Optional:** Select a destination stop on the same route
+6. **Optional:** Set walk time from destination stop to final destination
+7. **Optional:** Enter manual bus travel time (in minutes) for consistent results
+8. Click "Add Stop"
+
+### Edit Existing Routes
 1. Click "Settings" at the bottom
 2. Click the pencil icon (✏️) next to any stop
-3. Update the walk time
+3. Update walk times, destination stops, or manual travel time
 4. Click "Update Stop"
 
-### Add New Routes
-1. Click "Settings"
-2. Click "+ Add Stop" under "To Work" or "To Home"
-3. Select your route, direction, and stop
-4. Set your walk time
-5. Click "Add Stop"
+### When to Use Manual Travel Time
+- **Use it**: For regular commutes where you know typical travel time
+- **Benefits**: Faster, more consistent, doesn't rely on API matching
+- **Skip it**: For occasional trips or when you want live traffic-aware predictions
 
 ### Modify Default Stops
 Edit the `config.toWork` and `config.toHome` arrays in `script.js` (lines 74-95).
@@ -152,6 +184,7 @@ Edit the `config.toWork` and `config.toHome` arrays in `script.js` (lines 74-95)
 
 - Auto-refresh is disabled to prevent visual glitches (countdown still updates every minute)
 - API sometimes returns extra routes at shared stops (filtered in code)
+- Destination matching via API can occasionally fail (use manual travel time as workaround)
 
 ## 📄 License
 
@@ -166,4 +199,5 @@ MIT License - Feel free to use and modify for your own transit needs!
 ---
 
 **Live App:** [https://talrme.github.io/sophies-buses/](https://talrme.github.io/sophies-buses/)
+
 
